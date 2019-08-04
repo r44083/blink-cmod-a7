@@ -27,25 +27,29 @@ VIVADOARGS += -constraints $(CONSTRAINTS)
 # End of custom tcl args
 
 ifeq ($(OS),Windows_NT)
+
 define MKDIR
-	if not exist "$(1)" mkdir "$(1)"
+@if not exist "$(1)" mkdir "$(1)"
 endef
 define RMDIR
-	if exist "$(1)" rmdir /s /q "$(1)"
+@if exist "$(1)" rmdir /s /q "$(1)"
 endef
 define RM
-	del /q "$(1)" 2>nul
+@del /q "$(1)" 2>nul
 endef
+
 else
+
 define MKDIR
-	mkdir -p $(1)
+@mkdir -p "$(1)"
 endef
 define RMDIR
-	rm -rf $(1)
+@rm -rf "$(1)"
 endef
 define RM
-	rf -f "$(1)"
+@rf "$(1)"
 endef
+
 endif
 
 all:

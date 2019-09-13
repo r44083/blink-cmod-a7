@@ -9,22 +9,14 @@ PROJNAME := $(notdir $(CURDIR))
 
 ROOT := $(patsubst %/,%,$(dir $(lastword $(MAKEFILE_LIST))))
 
-OUTDIR := $(ROOT)/out
-REPORTDIR := $(OUTDIR)/report
+BUILDDIR := $(ROOT)/build
+REPORTDIR := $(BUILDDIR)/report
 
-LOG := $(OUTDIR)/$(PROJNAME).log
-JOURNAL := $(OUTDIR)/$(PROJNAME).jou
+LOG := $(BUILDDIR)/$(PROJNAME).log
 
-VIVADOARGS := -mode batch -notrace
-VIVADOARGS += -tempDir $(OUTDIR) -log $(LOG) -journal $(JOURNAL)
-VIVADOARGS += -source vivado_script.tcl
-# Start of custom tcl args
-VIVADOARGS += -tclargs
-VIVADOARGS += -projname $(PROJNAME) 
-VIVADOARGS += -partname $(PARTNAME)
-VIVADOARGS += -vhdls $(VHDLS)
-VIVADOARGS += -constraints $(CONSTRAINTS)
-# End of custom tcl args
+ARGS := -mode batch -notrace
+ARGS += -tempDir $(BUILDDIR) -applog -log $(LOG) -nojournal
+
 
 ifeq ($(OS),Windows_NT)
 define MKDIR
@@ -49,11 +41,9 @@ endef
 endif
 
 all:
-	$(call MKDIR,$(OUTDIR))
+	$(call MKDIR,$(BUILDDIR))
 	$(call MKDIR,$(REPORTDIR))
 	vivado $(VIVADOARGS)
 
 clean:
-	$(call RMDIR,$(OUTDIR))
-	$(call RM,usage_statistics_webtalk.html)
-	$(call RM,usage_statistics_webtalk.xml)
+	$(call RMDIR,$(BUILDDIR))

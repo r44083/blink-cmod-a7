@@ -17,6 +17,13 @@ LOG := $(BUILDDIR)/$(PROJNAME).log
 ARGS := -mode batch -notrace
 ARGS += -tempDir $(BUILDDIR) -applog -log $(LOG) -nojournal
 
+# Custom tcl build args
+BUILD_ARGS += -source build.tcl
+BUILD_ARGS += -tclargs
+BUILD_ARGS += -projname $(PROJNAME)
+BUILD_ARGS += -partname $(PARTNAME)
+BUILD_ARGS += -vhdls $(VHDLS)
+BUILD_ARGS += -constraints $(CONSTRAINTS)
 
 ifeq ($(OS),Windows_NT)
 
@@ -39,7 +46,7 @@ define RMDIR
 @rm -rf "$(1)"
 endef
 define RM
-@rf "$(1)"
+@rm -f "$(1)"
 endef
 
 endif
@@ -47,7 +54,8 @@ endif
 all:
 	$(call MKDIR,$(BUILDDIR))
 	$(call MKDIR,$(REPORTDIR))
-	vivado $(VIVADOARGS)
+	vivado $(ARGS) $(BUILD_ARGS)
+	move /Y usage_statistics_webtalk.* $(BUILDDIR)
 
 clean:
 	$(call RMDIR,$(BUILDDIR))
